@@ -1,0 +1,8 @@
+task deploy {
+    doLast {
+        exec {
+            commandLine 'gsutil', 'cp', 'clone.py', 'gs://us-central1-nfl-ad783d36-bucket/dags/clone.py'
+        }
+    }
+}
+

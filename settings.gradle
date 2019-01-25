@@ -1,0 +1,3 @@
+rootProject.name = 'nfldata'
+include 'dataflow'
+include 'composer'

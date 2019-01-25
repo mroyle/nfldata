@@ -1,0 +1,52 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:4.0.3"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'io.franzbecker.gradle-lombok' version '1.14'
+    id 'jacoco'
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+repositories {
+    mavenCentral()
+}
+
+lombok {
+    version = '1.18.4'
+    sha256 = ""
+}
+
+jacoco {
+    toolVersion = "0.8.2"
+}
+
+archivesBaseName = 'nfl_data_flow.jar'
+
+dependencies{
+    compile "org.apache.beam:beam-runners-google-cloud-dataflow-java:2.9.0"
+    compile "org.apache.beam:beam-sdks-java-core:2.9.0"
+    compileOnly "org.projectlombok:lombok:1.18.4"
+
+    testCompile "junit:junit:4.10"
+}
+
+task deploy {
+    doLast {
+        exec {
+            commandLine 'gsutil', 'cp', jar.archivePath.getAbsolutePath(), 'gs://nfl-raw-data/nfl_data_flow.jar'
+        }
+    }
+}
+
+deploy.dependsOn(shadowJar)
+shadowJar.dependsOn(build)

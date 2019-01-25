@@ -1,0 +1,6 @@
+task deploy {
+	doLast{
+		println "Deploying All Artifacts"
+	}
+}
+
