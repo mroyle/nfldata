@@ -18,7 +18,7 @@ default_args = {
 
 name = 'git_sync'
 
-schedule = '0 5 * * *'
+schedule = '0 0 * * 3'
 
 dag = DAG(name, schedule_interval=schedule, default_args=default_args)
 
@@ -29,7 +29,7 @@ git_sync_bash = """
 
 data_flow_bash = """ 
 	gsutil cp gs://nfl-raw-data/nfl_data_flow.jar .
-	java -jar nfl_data_flow.jar --runner=DataflowRunner --project=mike-playground-225822 --zone=us-central1-a --tempLocation=gs://dataflow-staging-us-central1-1031337770488/temp/  --stagingLocation=gs://nfl-raw-data/dataflow-staging --input=gs://nfl-raw-data/scrapR/play_by_play_data/regular_season/reg_pbp_*.csv --output=mike-playground-225822:NFLData.player_results_by_game
+	java -jar nfl_data_flow.jar --runner=DataflowRunner --project=mike-playground-225822 --zone=us-central1-a --tempLocation=gs://dataflow-staging-us-central1-1031337770488/temp/  --stagingLocation=gs://nfl-raw-data/dataflow-staging --input=gs://nfl-raw-data/scrapR/play_by_play_data/regular_season/reg_pbp_*.csv --output=mike-playground-225822:NFLData.player_results_by_game --bigTableInstanceID=nfl-bigtable --bigTableName=raw-data
 
 """
 

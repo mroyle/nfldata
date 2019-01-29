@@ -15,4 +15,14 @@ public interface Options extends DataflowPipelineOptions {
     @Validation.Required
     String getOutput();
     void setOutput(String value);
+
+    @Description("BigTable instance id")
+    @Validation.Required
+    String getBigTableInstanceID();
+    void setBigTableInstanceID(String value);
+
+    @Description("BigTable table name")
+    String getBigTableName();
+    void setBigTableName(String value);
+
 }

@@ -1,9 +1,15 @@
 package com.doit;
 
 import com.google.api.services.bigquery.model.TableRow;
+import com.google.bigtable.v2.Mutation;
+import com.google.common.collect.ImmutableList;
+import com.google.protobuf.ByteString;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.values.KV;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -26,6 +32,26 @@ public class Play implements Serializable {
     private String rusher_player_id;
     private String rusher_player_name;
 
+
+    public KV<ByteString, Iterable<Mutation>> asBigTableRow(){
+        String key = getPlayerID() + "#" + getGame_date();
+
+        Iterable<Mutation> mutations =
+                ImmutableList.of(Mutation.newBuilder()
+                        .setSetCell(
+                                Mutation.SetCell.newBuilder()
+                                        .setFamilyName("details")
+                                        .setColumnQualifier(ByteString.copyFromUtf8("opponent"))
+                                        .setValue(ByteString.copyFrom(Bytes.toBytes(defensive_team)))
+                        ).setSetCell(
+                                Mutation.SetCell.newBuilder()
+                                        .setFamilyName("details")
+                                        .setColumnQualifier(ByteString.copyFromUtf8("yards"))
+                                        .setValue(ByteString.copyFrom(Bytes.toBytes(yards_gained)))
+                        )
+                        .build());
+        return KV.of(ByteString.copyFromUtf8(key), mutations);
+    }
 
     public TableRow toTableRow(){
 

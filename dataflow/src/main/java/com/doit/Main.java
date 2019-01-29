@@ -3,15 +3,26 @@ package com.doit;
 import com.google.api.services.bigquery.model.TableFieldSchema;
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
+import com.google.bigtable.v2.Mutation;
+import com.google.cloud.bigtable.beam.CloudBigtableIO;
+import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
+import com.google.cloud.bigtable.config.BigtableOptions;
+import com.google.protobuf.ByteString;
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.PipelineResult;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.io.gcp.bigtable.BigtableIO;
 import org.apache.beam.sdk.options.*;
 import org.apache.beam.sdk.transforms.Combine;
+import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.KV;
+import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.TypeDescriptor;
 import org.apache.beam.sdk.values.TypeDescriptors;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.util.Bytes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +50,15 @@ public class Main {
 
         TableSchema schema = new TableSchema().setFields(fields);
 
+        BigtableOptions.Builder optionsBuilder =
+                new BigtableOptions.Builder()
+                        .setProjectId(options.getProject())
+                        .setInstanceId(options.getBigTableInstanceID());
+
+
         Pipeline pipeline = Pipeline.create(options);
-        pipeline
+
+        PCollection<Play> plays = pipeline
                 .apply("ReadFiles", TextIO.read().from(options.getInput()))
                 .apply("Map to Play", ParDo.of(new PlayMapper()))
                 .apply("Filter Non-Plays", ParDo.of(new RunPassFilter()))
@@ -62,14 +80,37 @@ public class Main {
                                                                     kv.getValue().get(2),
                                                                     kv.getKey().get(3),
                                                                     kv.getKey().get(4), "NA", "NA"
-                                )))
+                                )));
 
-                .apply("Format PlayResults", into(TypeDescriptor.of(TableRow.class))
+
+
+                plays.apply("Format PlayResults for BigQuery", into(TypeDescriptor.of(TableRow.class))
                         .via((Play yards) -> yards.toTableRow()))
-                .apply(BigQueryIO.writeTableRows()
-                        .to(options.getOutput())
-                        .withSchema(schema)
-                        .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE));
-        pipeline.run().waitUntilFinish();
+                        .apply(BigQueryIO.writeTableRows()
+                                .to(options.getOutput())
+                                .withSchema(schema)
+                                .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE));
+
+
+            CloudBigtableTableConfiguration c =
+                new CloudBigtableTableConfiguration.Builder()
+                        .withProjectId(options.getProject())
+                        .withInstanceId(options.getBigTableInstanceID())
+                        .withTableId(options.getBigTableName())
+                        .build();
+
+                plays.apply("Format PlayResults for BigTable", into(TypeDescriptors.kvs(TypeDescriptor.of(ByteString.class), TypeDescriptors.iterables(TypeDescriptor.of(Mutation.class))))
+                            .via((Play yards) -> yards.asBigTableRow()))
+                        .apply("write to  BigTable",
+                                BigtableIO.write()
+                                        .withBigtableOptions(optionsBuilder)
+                                        .withTableId("player_yards"));
+
+        PipelineResult result = pipeline.run();
+        result.waitUntilFinish();
+        if (!PipelineResult.State.DONE.equals(result.getState())){
+            throw new RuntimeException("Pipeline didn't complete successfully.");
+        }
     }
+
 }
