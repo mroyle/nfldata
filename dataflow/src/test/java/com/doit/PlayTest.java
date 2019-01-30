@@ -87,38 +87,4 @@ public class PlayTest extends Assert {
         assertEquals(new Integer(0), value.get(2));
     }
 
-    @Test
-    public void shouldBeAbleToCreateATableRow(){
-        Play passPlay = new Play("oak", "den", "2018-12-08", 10, 1, 0, "1", "mikePass", "NA", "NA");
-        Play rushPlay = new Play("oak", "den", "2018-12-08", 10, 1, 0, "NA", "NA", "2", "mikeRush");
-
-        TableRow passRow = passPlay.toTableRow();
-        TableRow rushRow = rushPlay.toTableRow();
-
-        assertEquals("oak", passRow.get("team"));
-        assertEquals("oak", rushRow.get("team"));
-
-        assertEquals("den", passRow.get("opponent"));
-        assertEquals("den", rushRow.get("opponent"));
-
-        assertEquals("2018-12-08", passRow.get("game_date"));
-        assertEquals("2018-12-08", rushRow.get("game_date"));
-
-        assertEquals("1", passRow.get("player_id"));
-        assertEquals("2", rushRow.get("player_id"));
-
-        assertEquals("mikePass", passRow.get("player_name"));
-        assertEquals("mikeRush", rushRow.get("player_name"));
-
-        assertEquals(new Integer(10), passRow.get("yards"));
-        assertEquals(new Integer(10), rushRow.get("yards"));
-
-        assertEquals(new Integer(1), passRow.get("touchdowns"));
-        assertEquals(new Integer(1), rushRow.get("touchdowns"));
-
-        assertEquals(new Integer(0), passRow.get("fumbles"));
-        assertEquals(new Integer(0), rushRow.get("fumbles"));
-    }
-
-
 }

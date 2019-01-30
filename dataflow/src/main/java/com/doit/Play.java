@@ -33,40 +33,6 @@ public class Play implements Serializable {
     private String rusher_player_name;
 
 
-    public KV<ByteString, Iterable<Mutation>> asBigTableRow(){
-        String key = getPlayerID() + "#" + getGame_date();
-
-        Iterable<Mutation> mutations =
-                ImmutableList.of(Mutation.newBuilder()
-                        .setSetCell(
-                                Mutation.SetCell.newBuilder()
-                                        .setFamilyName("details")
-                                        .setColumnQualifier(ByteString.copyFromUtf8("opponent"))
-                                        .setValue(ByteString.copyFrom(Bytes.toBytes(defensive_team)))
-                        ).setSetCell(
-                                Mutation.SetCell.newBuilder()
-                                        .setFamilyName("details")
-                                        .setColumnQualifier(ByteString.copyFromUtf8("yards"))
-                                        .setValue(ByteString.copyFrom(Bytes.toBytes(yards_gained)))
-                        )
-                        .build());
-        return KV.of(ByteString.copyFromUtf8(key), mutations);
-    }
-
-    public TableRow toTableRow(){
-
-        TableRow tr = new TableRow();
-        tr.set("team", posession_team);
-        tr.set("opponent", defensive_team);
-        tr.set("game_date", game_date);
-        tr.set("yards", yards_gained);
-        tr.set("touchdowns", touchdown);
-        tr.set("fumbles", fumble);
-        tr.set("player_id", getPlayerID());
-        tr.set("player_name", getPlayerName());
-        return tr;
-    }
-
     public String toCSV() {
         return  posession_team +
                 "," + defensive_team +

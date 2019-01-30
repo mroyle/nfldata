@@ -58,7 +58,7 @@ public class Main {
 
         Pipeline pipeline = Pipeline.create(options);
 
-        PCollection<Play> plays = pipeline
+        PCollection<GameStats> plays = pipeline
                 .apply("ReadFiles", TextIO.read().from(options.getInput()))
                 .apply("Map to Play", ParDo.of(new PlayMapper()))
                 .apply("Filter Non-Plays", ParDo.of(new RunPassFilter()))
@@ -70,8 +70,8 @@ public class Main {
                                 TypeDescriptors.lists(TypeDescriptors.integers()))
                         ).via((Play play) -> play.asListKV()))
                 .apply("Collect Stats", Combine.perKey(new ListAccumFn()))
-                .apply("Revert to Plays", into(TypeDescriptor.of(Play.class))
-                        .via((KV<List<String>, List<Integer>> kv) -> new Play(
+                .apply("Revert to Plays", into(TypeDescriptor.of(GameStats.class))
+                        .via((KV<List<String>, List<Integer>> kv) -> new GameStats(
                                                                     kv.getKey().get(0),
                                                                     kv.getKey().get(1),
                                                                     kv.getKey().get(2),
@@ -79,13 +79,13 @@ public class Main {
                                                                     kv.getValue().get(1),
                                                                     kv.getValue().get(2),
                                                                     kv.getKey().get(3),
-                                                                    kv.getKey().get(4), "NA", "NA"
+                                                                    kv.getKey().get(4)
                                 )));
 
 
 
                 plays.apply("Format PlayResults for BigQuery", into(TypeDescriptor.of(TableRow.class))
-                        .via((Play yards) -> yards.toTableRow()))
+                        .via((GameStats yards) -> yards.toTableRow()))
                         .apply(BigQueryIO.writeTableRows()
                                 .to(options.getOutput())
                                 .withSchema(schema)
@@ -100,7 +100,7 @@ public class Main {
                         .build();
 
                 plays.apply("Format PlayResults for BigTable", into(TypeDescriptors.kvs(TypeDescriptor.of(ByteString.class), TypeDescriptors.iterables(TypeDescriptor.of(Mutation.class))))
-                            .via((Play yards) -> yards.asBigTableRow()))
+                            .via((GameStats yards) -> yards.asBigTableRow()))
                         .apply("write to  BigTable",
                                 BigtableIO.write()
                                         .withBigtableOptions(optionsBuilder)
