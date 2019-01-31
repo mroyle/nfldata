@@ -16,7 +16,7 @@ public class ColumnCounter {
         }
     }
 
-    @Test
+    //@Test
     public void getActualColummPosition() throws Exception{
         BufferedReader brTest = new BufferedReader(new FileReader("/Users/michaelroyle/work/2014.csv"));
         String[] headers = brTest .readLine().split(",");
