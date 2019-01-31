@@ -49,6 +49,7 @@ dependencies{
     compileOnly "org.projectlombok:lombok:1.18.4"
 
     testCompile "junit:junit:4.10"
+    testCompile "org.reflections:reflections:0.9.11"
 }
 
 task deploy {
