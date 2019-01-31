@@ -1,5 +1,6 @@
-package com.doit;
+package com.doit.transformers;
 
+import com.doit.domain.Play;
 import lombok.Data;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.joda.time.Instant;

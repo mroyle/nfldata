@@ -1,5 +1,6 @@
-package com.doit;
+package com.doit.domain;
 
+import com.doit.domain.GameStats;
 import com.google.api.services.bigquery.model.TableRow;
 import org.junit.Assert;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package com.doit;
+package com.doit.domain;
 
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.bigtable.v2.Mutation;

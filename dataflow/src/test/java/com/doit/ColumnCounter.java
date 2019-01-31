@@ -2,6 +2,9 @@ package com.doit;
 
 import org.junit.Test;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 public class ColumnCounter {
 
     //@Test
@@ -10,6 +13,17 @@ public class ColumnCounter {
 
         for (int x = 0; x < columns.length; x++){
             System.out.println(x + " " + columns[x]);
+        }
+    }
+
+    @Test
+    public void getActualColummPosition() throws Exception{
+        BufferedReader brTest = new BufferedReader(new FileReader("/Users/michaelroyle/work/2014.csv"));
+        String[] headers = brTest .readLine().split(",");
+        System.out.println("Total number of columns = " + (headers.length + 1));
+        System.out.println("Offset " + Math.abs(255 - headers.length));
+        for (int index=0; index<headers.length; index++){
+            System.out.println(index + " " + headers[index]);
         }
     }
 }

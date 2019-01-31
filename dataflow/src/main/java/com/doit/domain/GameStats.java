@@ -1,4 +1,4 @@
-package com.doit;
+package com.doit.domain;
 
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.bigtable.v2.Mutation;
@@ -8,8 +8,10 @@ import lombok.AllArgsConstructor;
 import org.apache.beam.sdk.values.KV;
 import org.apache.hadoop.hbase.util.Bytes;
 
+import java.io.Serializable;
+
 @AllArgsConstructor
-public class GameStats {
+public class GameStats implements Serializable {
     private String team;
     private String opponent;
     private String game_date;

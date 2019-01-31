@@ -1,11 +1,10 @@
-package com.doit;
+package com.doit.domain;
 
-import com.google.api.services.bigquery.model.TableRow;
+import com.doit.domain.Play;
 import org.apache.beam.sdk.values.KV;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.swing.text.TableView;
 import java.util.List;
 
 public class PlayTest extends Assert {

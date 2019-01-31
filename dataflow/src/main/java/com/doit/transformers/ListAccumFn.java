@@ -1,4 +1,4 @@
-package com.doit;
+package com.doit.transformers;
 
 import org.apache.beam.sdk.transforms.Combine;
 
