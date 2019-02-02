@@ -18,7 +18,7 @@ public class ColumnCounter {
 
     //@Test
     public void getActualColummPosition() throws Exception{
-        BufferedReader brTest = new BufferedReader(new FileReader("/Users/michaelroyle/work/2014.csv"));
+        BufferedReader brTest = new BufferedReader(new FileReader("/Users/michaelroyle/work/2017.csv"));
         String[] headers = brTest .readLine().split(",");
         System.out.println("Total number of columns = " + (headers.length + 1));
         System.out.println("Offset " + Math.abs(255 - headers.length));

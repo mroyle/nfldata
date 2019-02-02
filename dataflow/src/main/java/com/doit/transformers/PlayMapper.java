@@ -19,6 +19,8 @@ public class PlayMapper extends DoFn<String, Play> {
     public void processElement(@DoFn.Element String line, DoFn.OutputReceiver<Play> out) {
         // Use OutputReceiver.output to emit the output element.
         String[] elements = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+
+        //offset is needed because they added touchback as the 119 element in 2016 so any columns >=119 needs to apply offset
         int offset = Math.abs(255 - elements.length);
         try {
             Play ty = new Play(
