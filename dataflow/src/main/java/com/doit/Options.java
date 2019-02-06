@@ -25,4 +25,8 @@ public interface Options extends DataflowPipelineOptions {
     String getBigTableName();
     void setBigTableName(String value);
 
+    @Description("Which Pipeline to Run")
+    String getPipeline();
+    void setPipeline(String value);
+
 }

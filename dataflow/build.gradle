@@ -46,6 +46,7 @@ dependencies{
     compile "org.apache.beam:beam-runners-google-cloud-dataflow-java:2.9.0"
     compile "com.google.cloud.bigtable:bigtable-hbase-beam:1.5.0"
     compile "org.apache.beam:beam-sdks-java-core:2.9.0"
+    compile "org.apache.beam:beam-runners-direct-java:2.9.0"
     compileOnly "org.projectlombok:lombok:1.18.4"
 
     testCompile "junit:junit:4.10"

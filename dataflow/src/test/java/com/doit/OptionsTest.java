@@ -14,7 +14,7 @@ public class OptionsTest extends Assert {
     private String btName = "btName";
 
     private String[] getValidArgs(int[] remove){
-        ArrayList<String> argsList = new ArrayList<>(Arrays.asList("--bigTableInstanceID=" + btInstanceID, "--bigTableName="+btName, "--input=" + inputPath, "--output=" + outputPath, "--runner=DataflowRunner"));
+        ArrayList<String> argsList = new ArrayList<>(Arrays.asList("--bigTableInstanceID=" + btInstanceID, "--bigTableName="+btName, "--input=" + inputPath, "--output=" + outputPath, "--runner=DataflowRunner", "--pipeline=DefaultPipeline"));
 
         for (int item : remove){
             argsList.remove(item);
@@ -38,6 +38,15 @@ public class OptionsTest extends Assert {
                 .as(Options.class);
 
         assertEquals(outputPath, options.getOutput());
+    }
+
+    @Test
+    public void shoudlBeAbleToGetThePipelineClass(){
+        Options options = PipelineOptionsFactory.fromArgs(getValidArgs(new int[]{}))
+                .withValidation()
+                .as(Options.class);
+
+        assertEquals("DefaultPipeline", options.getPipeline());
     }
 
     @Test(expected = IllegalArgumentException.class)
