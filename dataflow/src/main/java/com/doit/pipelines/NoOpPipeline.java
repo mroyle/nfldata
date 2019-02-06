@@ -5,7 +5,8 @@ import com.doit.Pipeline;
 
 public class NoOpPipeline implements Pipeline {
     @Override
-    public void process(Options options) {
+    public void process(Options op) {
+        NoOpOptions options = (NoOpOptions)op;
         System.out.println("Hi");
     }
 }

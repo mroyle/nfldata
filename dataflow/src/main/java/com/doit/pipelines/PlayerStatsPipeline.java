@@ -33,7 +33,7 @@ import static org.apache.beam.sdk.transforms.MapElements.into;
 public class PlayerStatsPipeline implements Pipeline {
 
     @Override
-    public void process(Options options){
+    public void process(Options op){
         List<TableFieldSchema> fields = new ArrayList<>();
         fields.add(new TableFieldSchema().setName("team").setType("STRING"));
         fields.add(new TableFieldSchema().setName("opponent").setType("STRING"));
@@ -45,6 +45,8 @@ public class PlayerStatsPipeline implements Pipeline {
         fields.add(new TableFieldSchema().setName("player_name").setType("STRING"));
 
         TableSchema schema = new TableSchema().setFields(fields);
+
+        PlayerStatsOptions options = (PlayerStatsOptions)op;
 
         BigtableOptions.Builder optionsBuilder =
                 new BigtableOptions.Builder()
