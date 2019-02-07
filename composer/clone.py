@@ -27,10 +27,24 @@ git_sync_bash = """
     gsutil -m rsync -r -d nflscrapR-data gs://nfl-raw-data/scrapR
 """.format(repo_url=repo_url)
 
-data_flow_bash = """ 
+player_stats_data_flow_bash = """
 	gsutil cp gs://nfl-raw-data/nfl_data_flow.jar .
 	java -jar nfl_data_flow.jar --pipeline=PlayerStats --runner=DataflowRunner --project=mike-playground-225822 --zone=us-central1-a --tempLocation=gs://dataflow-staging-us-central1-1031337770488/temp/  --stagingLocation=gs://nfl-raw-data/dataflow-staging --input=gs://nfl-raw-data/scrapR/play_by_play_data/regular_season/reg_pbp_*.csv --output=mike-playground-225822:NFLData.player_results_by_game --bigTableInstanceID=nfl-bigtable --bigTableName=raw-data
 
+"""
+
+wp_data_flow_bash = """
+	gsutil cp gs://nfl-raw-data/nfl_data_flow.jar .
+	java -jar nfl_data_flow.jar
+	    --pipeline=WP
+	    --runner=DataflowRunner
+	    --project=mike-playground-225822
+	    --zone=us-central1-a
+	    --tempLocation=gs://dataflow-staging-us-central1-1031337770488/temp/
+	    --stagingLocation=gs://nfl-raw-data/dataflow-staging
+	    --playByPlayInput=gs://nfl-raw-data/scrapR/play_by_play_data/regular_season/reg_pbp_*.csv
+        --gameResultsInput=gs://nfl-raw-data/scrapR/games_data/regular_season/reg_games_*.csv
+        --bigQueryTable=mike-playground-225822:NFLData.win_percentage
 """
 
 clone_git = BashOperator(
@@ -41,7 +55,7 @@ clone_git = BashOperator(
 
 transform_push_to_bigquery = BashOperator(
     task_id= 'transform_push',
-    bash_command=data_flow_bash,
+    bash_command=wp_data_flow_bash,
     dag=dag
 )
 

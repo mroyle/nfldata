@@ -16,7 +16,7 @@ public class DomainTests extends Assert {
         Reflections reflections = new Reflections("com.doit.domain", new SubTypesScanner(false));
         Set<Class<? extends Object>> allClasses = reflections.getSubTypesOf(Object.class);
         for (Class clazz : allClasses){
-            assertTrue(Arrays.asList(clazz.getInterfaces()).contains(Serializable.class));
+            assertTrue(clazz.getCanonicalName() + " is not serializable", Arrays.asList(clazz.getInterfaces()).contains(Serializable.class));
         }
     }
 }

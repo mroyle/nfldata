@@ -4,11 +4,11 @@ import com.doit.domain.GameResults;
 import org.apache.beam.sdk.transforms.DoFn;
 
 public class GameResultsMapper extends DoFn<String, GameResults> {
-    private int game_id_column=0;
-    private int home_team_column=1;
-    private int away_team_column=2;
-    private int home_team_score_column=7;
-    private int away_team_score_column=8;
+    private int game_id_column=1;
+    private int home_team_column=2;
+    private int away_team_column=3;
+    private int home_team_score_column=8;
+    private int away_team_score_column=9;
 
     @DoFn.ProcessElement
     public void processElement(@DoFn.Element String line, DoFn.OutputReceiver<GameResults> out) {

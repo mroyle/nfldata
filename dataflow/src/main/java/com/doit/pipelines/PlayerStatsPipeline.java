@@ -34,18 +34,6 @@ public class PlayerStatsPipeline implements Pipeline {
 
     @Override
     public void process(Options op){
-        List<TableFieldSchema> fields = new ArrayList<>();
-        fields.add(new TableFieldSchema().setName("team").setType("STRING"));
-        fields.add(new TableFieldSchema().setName("opponent").setType("STRING"));
-        fields.add(new TableFieldSchema().setName("game_date").setType("DATE"));
-        fields.add(new TableFieldSchema().setName("yards").setType("INTEGER"));
-        fields.add(new TableFieldSchema().setName("touchdowns").setType("INTEGER"));
-        fields.add(new TableFieldSchema().setName("fumbles").setType("INTEGER"));
-        fields.add(new TableFieldSchema().setName("player_id").setType("STRING"));
-        fields.add(new TableFieldSchema().setName("player_name").setType("STRING"));
-
-        TableSchema schema = new TableSchema().setFields(fields);
-
         PlayerStatsOptions options = (PlayerStatsOptions)op;
 
         BigtableOptions.Builder optionsBuilder =
@@ -86,7 +74,7 @@ public class PlayerStatsPipeline implements Pipeline {
                 .via((GameStats yards) -> yards.toTableRow()))
                 .apply(BigQueryIO.writeTableRows()
                         .to(options.getOutput())
-                        .withSchema(schema)
+                        .withSchema(GameStats.getSchema())
                         .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE));
 
 

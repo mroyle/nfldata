@@ -1,15 +1,8 @@
 package com.doit.domain;
 
-import com.google.api.services.bigquery.model.TableRow;
-import com.google.bigtable.v2.Mutation;
-import com.google.common.collect.ImmutableList;
-import com.google.protobuf.ByteString;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.values.KV;
-import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.Serializable;
 import java.util.Arrays;

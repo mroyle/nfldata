@@ -1,9 +1,9 @@
 package com.doit.transformers;
 
-import com.doit.domain.ExpectedPointsInput;
+import com.doit.domain.PlayResults;
 import org.apache.beam.sdk.transforms.DoFn;
 
-public class ExpectedPointsInputMapper extends DoFn<String, ExpectedPointsInput> {
+public class PlayResultsMapper extends DoFn<String, PlayResults> {
 
     private int game_id_column=1;
     private int team_column=4;
@@ -15,11 +15,11 @@ public class ExpectedPointsInputMapper extends DoFn<String, ExpectedPointsInput>
     private int score_differential_column=54;
 
     @DoFn.ProcessElement
-    public void processElement(@DoFn.Element String line, DoFn.OutputReceiver<ExpectedPointsInput> out) {
+    public void processElement(@DoFn.Element String line, DoFn.OutputReceiver<PlayResults> out) {
         String[] elements = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
         try {
-            ExpectedPointsInput ep = new ExpectedPointsInput(
+            PlayResults ep = new PlayResults(
                     elements[game_id_column],
                     elements[team_column],
                     Integer.parseInt(elements[drive_number_column]),
